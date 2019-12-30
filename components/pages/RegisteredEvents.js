@@ -5,14 +5,17 @@ import {
   View,
   Text,
   StyleSheet,
+  SafeAreaView,
 } from 'react-native';
 
-export default class MyComponent extends Component {
+type Props = {};
+
+export default class MyComponent extends Component<Props> {
   render() {
     return (
-      <View style={styles.container}>
+      <SafeAreaView style={styles.container}>
         <Text>I'm the MyComponent component</Text>
-      </View>
+      </SafeAreaView>
     );
   }
 }
