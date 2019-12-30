@@ -5,16 +5,41 @@ import {
   View,
   Text,
   StyleSheet,
+  FlatList,
   SafeAreaView,
 } from 'react-native';
 
-type Props = {};
+import EventCardList from '../../components/organisms/EventCardList'
 
-export default class MyComponent extends Component<Props> {
+type Props = {};
+type State = {
+  loading: boolean,
+  events: Array<Object>,
+};
+
+export default class RegisteredEvents extends Component<Props, State> {
+
+  constructor() {
+    super();
+    this.state = {
+      loading: false,
+      events: [
+        {
+          key: '1',
+          title: "SF Marathon 1",
+          description: "Join the SF marathon now! Join the SF marathon now! Join the SF marathon now! Join the SF marathon now! Join the SF marathon now!",
+          imageUrl: null,
+          date: "12/31/19 12:30 - 3:30PM PST",
+          location: "San Francisco"
+        },
+      ]
+    }
+  }
+
   render() {
     return (
       <SafeAreaView style={styles.container}>
-        <Text>I'm the MyComponent component</Text>
+        <EventCardList events={this.state.events} />
       </SafeAreaView>
     );
   }

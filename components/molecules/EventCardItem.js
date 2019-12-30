@@ -9,11 +9,14 @@ import {
   Image,
 } from 'react-native';
 
+import Icon from 'react-native-vector-icons/Fontisto'
+
 type Props = {
   title: String,
   description: String,
   image: ImageBitmap,
   location?: String,
+  date?: String,
 };
 
 export default class EventCardItem extends Component<Props> {
@@ -21,8 +24,13 @@ export default class EventCardItem extends Component<Props> {
     return (
       <View style={styles.container}>
         <View style={styles.textContainer}>
-          <Text style={styles.title}>{this.props.title}</Text>
-          <Text style={styles.description}>{this.props.description}</Text>
+          <Text ellipsizeMode="tail" numberOfLines={1} style={styles.title}>{this.props.title}</Text>
+          <Text ellipsizeMode="tail" numberOfLines={3} style={styles.description}>{this.props.description}</Text>
+          <Text style={styles.date}>{this.props.date}</Text>
+          <View style={styles.locationStuff}>
+            <Icon name="map-marker-alt"></Icon>
+            <Text style={styles.location}>{this.props.location}</Text>
+          </View>
         </View>
         <Image style={styles.image}></Image>
       </View>
@@ -38,7 +46,7 @@ const styles = StyleSheet.create({
     borderRadius: 5,
     padding: 10,
     margin: 10,
-    height: 100,
+    height: 150,
     shadowColor: "#000",
     shadowOffset: {
       width: 0,
@@ -50,16 +58,33 @@ const styles = StyleSheet.create({
     elevation: 5,
   },
   textContainer: {
+    marginRight: 10,
     flex: 4,
     flexDirection: "column"
   },
   title: {
     fontWeight: 'bold',
     fontSize: 18,
-    flex: 1,
+    flex: 2,
   },
   description: {
-    flex: 2,
+    fontSize: 12,
+    color: '#848484',
+    flex: 4,
+    flexShrink: 1,
+  },
+  date: {
+    fontSize: 12,
+    marginRight: 10,
+    flex: 1,
+  },
+  locationStuff: {
+    flexDirection: 'row',
+    flex: 1,
+  },
+  location: {
+    fontSize: 12,
+    marginLeft: 5,
   },
   image: {
     aspectRatio: 1,

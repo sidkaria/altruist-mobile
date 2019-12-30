@@ -9,10 +9,11 @@ import {
   SafeAreaView,
 } from 'react-native';
 
-import EventCardItem from '../../components/molecules/EventCardItem'
+import EventCardList from '../../components/organisms/EventCardList'
 
 type Props = {};
 type State = {
+  loading: boolean,
   events: Array<Object>,
 };
 
@@ -21,18 +22,31 @@ export default class FindEvents extends Component<Props, State> {
   constructor() {
     super();
     this.state = {
+      loading: false,
       events: [
         {
           key: '1',
-          title: "SF Marathon",
-          description: "Join the SF marathon now!",
-          imageUrl: null
+          title: "SF Marathon 1",
+          description: "Join the SF marathon now! Join the SF marathon now! Join the SF marathon now! Join the SF marathon now! Join the SF marathon now!",
+          imageUrl: null,
+          date: "12/31/19 12:30 - 3:30PM PST",
+          location: "San Francisco"
         },
         {
           key: '2',
-          title: "SF Marathon",
+          title: "SF Marathon 2",
           description: "Join the SF marathon now!",
-          imageUrl: null
+          imageUrl: null,
+          date: "12/31/19 12:30 - 3:30PM PST",
+          location: "San Francisco"
+        },
+        {
+          key: '3',
+          title: "SF Marathon 3",
+          description: "Join the SF marathon now!",
+          imageUrl: null,
+          date: "12/31/19 12:30 - 3:30PM PST",
+          location: "San Francisco"
         }
       ]
     }
@@ -41,15 +55,7 @@ export default class FindEvents extends Component<Props, State> {
   render() {
     return (
       <SafeAreaView style={styles.container}>
-        <FlatList
-          data={this.state.events}
-          renderItem={({item}) => <EventCardItem
-              title={item.title}
-              description={item.description}
-              image={item.imageUrl}>
-            </EventCardItem>} >
-
-        </FlatList>
+        <EventCardList events={this.state.events} />
       </SafeAreaView>
     );
   }

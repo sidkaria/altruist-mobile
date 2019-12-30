@@ -31,6 +31,7 @@ import RegisteredEvents from './components/pages/RegisteredEvents'
 import 'react-native-gesture-handler'
 import { createAppContainer } from 'react-navigation';
 import { createBottomTabNavigator } from 'react-navigation-tabs';
+import Ionicons from 'react-native-vector-icons/Ionicons'
 
 const App: () => React$Node = () => {
   return (
@@ -39,9 +40,32 @@ const App: () => React$Node = () => {
   );
 };
 
-const TabNavigator = createBottomTabNavigator({
-  FindEvents: FindEvents,
-  RegisteredEvents: RegisteredEvents
-});
+const TabNavigator = createBottomTabNavigator(
+  {
+    "Find Events": FindEvents,
+    "Registered Events": RegisteredEvents
+  },
+  {
+    defaultNavigationOptions: ({ navigation }) => ({
+      tabBarIcon: ({ focused, horizontal, tintColor }) => {
+        const { routeName } = navigation.state;
+        let IconComponent = Ionicons;
+        let iconName;
+        if (routeName === 'Find Events') {
+          iconName = `ios-information-circle${focused ? '' : '-outline'}`;
+        } else if (routeName === 'Registered Events') {
+          iconName = `ios-options`;
+        }
+
+        // You can return any component that you like here!
+        return <IconComponent name={iconName} size={25} color={tintColor} />;
+      },
+    }),
+    tabBarOptions: {
+      activeTintColor: 'skyblue',
+      inactiveTintColor: 'gray',
+    },
+  }
+);
 
 export default createAppContainer(TabNavigator);
