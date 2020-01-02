@@ -26,24 +26,23 @@ import {
 
 import FindEvents from './components/pages/FindEvents';
 import RegisteredEvents from './components/pages/RegisteredEvents'
+import EventDetail from './components/pages/EventDetail'
 
 //navigation
 import 'react-native-gesture-handler'
 import { createAppContainer } from 'react-navigation';
+import { createStackNavigator } from 'react-navigation-stack'
 import { createBottomTabNavigator } from 'react-navigation-tabs';
 import Ionicons from 'react-native-vector-icons/Ionicons'
 
-const App: () => React$Node = () => {
-  return (
-    <>
-    </>
-  );
-};
-
 const TabNavigator = createBottomTabNavigator(
   {
-    "Find Events": FindEvents,
-    "Registered Events": RegisteredEvents
+    "Find Events": {
+      screen: FindEvents,
+    },
+    "Registered Events": {
+      screen: RegisteredEvents
+    }
   },
   {
     defaultNavigationOptions: ({ navigation }) => ({
@@ -65,7 +64,25 @@ const TabNavigator = createBottomTabNavigator(
       activeTintColor: 'skyblue',
       inactiveTintColor: 'gray',
     },
+    navigationOptions: ({navigation}) => {
+      const {routeName} = navigation.state.routes[navigation.state.index];
+      const headerTitle = routeName;
+      return {
+        headerTitle,
+      }
+    }
   }
 );
 
-export default createAppContainer(TabNavigator);
+const StackNavigator = createStackNavigator(
+  {
+    TabNavigator: TabNavigator,
+    EventDetail: EventDetail
+  },
+  {
+    initialRouteName: 'TabNavigator',
+  }
+);
+
+
+export default createAppContainer(StackNavigator);

@@ -10,8 +10,10 @@ import {
 } from 'react-native';
 
 import Icon from 'react-native-vector-icons/Fontisto'
+import { NavigationScreenProps, withNavigation } from 'react-navigation'
+import { TouchableOpacity } from 'react-native-gesture-handler';
 
-type Props = {
+type Props = NavigationScreenProps & {
   title: String,
   description: String,
   image: ImageBitmap,
@@ -19,21 +21,23 @@ type Props = {
   date?: String,
 };
 
-export default class EventCardItem extends Component<Props> {
+class EventCardItem extends Component<Props> {
   render() {
     return (
-      <View style={styles.container}>
-        <View style={styles.textContainer}>
-          <Text ellipsizeMode="tail" numberOfLines={1} style={styles.title}>{this.props.title}</Text>
-          <Text ellipsizeMode="tail" numberOfLines={3} style={styles.description}>{this.props.description}</Text>
-          <Text style={styles.date}>{this.props.date}</Text>
-          <View style={styles.locationStuff}>
-            <Icon name="map-marker-alt"></Icon>
-            <Text style={styles.location}>{this.props.location}</Text>
+      <TouchableOpacity activeOpacity={0.7} onPress={() => this.props.navigation.navigate('EventDetail', { eventID: this.props.title })}>
+        <View style={styles.container} >
+          <View style={styles.textContainer}>
+            <Text ellipsizeMode="tail" numberOfLines={1} style={styles.title}>{this.props.title}</Text>
+            <Text ellipsizeMode="tail" numberOfLines={3} style={styles.description}>{this.props.description}</Text>
+            <Text style={styles.date}>{this.props.date}</Text>
+            <View style={styles.locationStuff}>
+              <Icon name="map-marker-alt"></Icon>
+              <Text style={styles.location}>{this.props.location}</Text>
+            </View>
           </View>
+          <Image style={styles.image}></Image>
         </View>
-        <Image style={styles.image}></Image>
-      </View>
+      </TouchableOpacity>
     );
   }
 }
@@ -89,6 +93,9 @@ const styles = StyleSheet.create({
   image: {
     aspectRatio: 1,
     borderWidth: 1,
-    borderColor: 'lightgrey'
+    borderColor: 'lightgrey',
+    borderRadius: 3,
   }
 });
+
+export default withNavigation(EventCardItem)
