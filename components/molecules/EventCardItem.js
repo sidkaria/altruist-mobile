@@ -14,6 +14,7 @@ import { NavigationScreenProps, withNavigation } from 'react-navigation'
 import { TouchableOpacity } from 'react-native-gesture-handler';
 
 type Props = NavigationScreenProps & {
+  eventID: String,
   title: String,
   description: String,
   registered: Boolean,
@@ -26,7 +27,7 @@ type Props = NavigationScreenProps & {
 class EventCardItem extends Component<Props> {
   render() {
     return (
-      <TouchableOpacity activeOpacity={0.7} onPress={() => this.props.navigation.navigate('EventDetail', { eventID: this.props.title })}>
+      <TouchableOpacity activeOpacity={0.7} onPress={() => this.props.navigation.navigate('EventDetail', { eventID: this.props.eventID })}>
         <View style={styles.container} >
           <View style={styles.textContainer}>
             <Text ellipsizeMode="tail" numberOfLines={1} style={styles.title}>{this.props.title}</Text>

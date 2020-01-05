@@ -5,7 +5,7 @@ import { View, Text, Image, Button, SafeAreaView, StyleSheet, Alert } from 'reac
 import { NavigationScreenProps, withNavigation } from 'react-navigation'
 import { TouchableOpacity } from 'react-native-gesture-handler';
 
-import { MapView } from 'react-native-maps'
+import MapView, { Circle, Marker } from 'react-native-maps'
 
 type Props = NavigationScreenProps & {
 }
@@ -37,21 +37,22 @@ class EventDetail extends Component<Props, State> {
   }
 
   componentDidMount() {
+    this.setState({eventID: this.props.navigation.getParam('eventID', 'NO-ID')})
     this.fetchEventInfo();
   }
 
   fetchEventInfo = () => {
     this.setState({
       loading: false,
-      title: "SF Marathon 1",
+      title: "SF Marathon",
       description: "Join the SF marathon now! Join the SF marathon now! Join the SF marathon now! Join the SF marathon now! Join the SF marathon now!",
       registered: true,
       imageUrl: null,
       start: "12/31/19 12:30PM",
       end: "12/31/19 3:30PM",
       location: "San Francisco",
-      lat: -122.53354,
-      long: 34.56986
+      lat: 37.776030,
+      long: -122.418800
     })
   }
 
@@ -67,7 +68,19 @@ class EventDetail extends Component<Props, State> {
   render() {
     return (
       <SafeAreaView style={styles.container}>
-        <MapView style={styles.mapView} />
+        {this.state.lat != null &&
+        <MapView
+          style={styles.mapView}
+          initialRegion={{
+            latitude: this.state.lat,
+            longitude: this.state.long,
+            latitudeDelta: 0.0922,
+            longitudeDelta: 0.0421,
+          }}
+        >
+          <Circle center={{latitude: this.state.lat, longitude: this.state.long}} radius={2000} fillColor="rgba(71,158,206,0.37)" strokeColor="#479ECE"/>
+          <Marker coordinate={{latitude: this.state.lat, longitude: this.state.long}}/>
+        </MapView>}
         <View style={styles.rest}>
           <Text style={styles.title}>{this.state.title}</Text>
           <Text>{this.state.description}</Text>

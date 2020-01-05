@@ -16,6 +16,7 @@ export default class EventCardList extends Component<Props> {
         data={this.props.events}
         renderItem={({item}) => 
           <EventCardItem
+            eventID={item.eventID}
             title={item.title}
             description={item.description}
             image={item.imageUrl}
