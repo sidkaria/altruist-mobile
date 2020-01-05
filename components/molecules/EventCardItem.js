@@ -16,9 +16,11 @@ import { TouchableOpacity } from 'react-native-gesture-handler';
 type Props = NavigationScreenProps & {
   title: String,
   description: String,
+  registered: Boolean,
   image: ImageBitmap,
   location?: String,
-  date?: String,
+  start?: String,
+  end? : String,
 };
 
 class EventCardItem extends Component<Props> {
@@ -29,7 +31,7 @@ class EventCardItem extends Component<Props> {
           <View style={styles.textContainer}>
             <Text ellipsizeMode="tail" numberOfLines={1} style={styles.title}>{this.props.title}</Text>
             <Text ellipsizeMode="tail" numberOfLines={3} style={styles.description}>{this.props.description}</Text>
-            <Text style={styles.date}>{this.props.date}</Text>
+            <Text style={styles.date}>{this.props.start} - {this.props.end}</Text>
             <View style={styles.locationStuff}>
               <Icon name="map-marker-alt"></Icon>
               <Text style={styles.location}>{this.props.location}</Text>

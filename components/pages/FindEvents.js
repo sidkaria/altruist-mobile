@@ -26,27 +26,42 @@ export default class FindEvents extends Component<Props, State> {
       events: [
         {
           key: '1',
+          eventID: '18935',
           title: "SF Marathon 1",
           description: "Join the SF marathon now! Join the SF marathon now! Join the SF marathon now! Join the SF marathon now! Join the SF marathon now!",
+          registered: true,
           imageUrl: null,
-          date: "12/31/19 12:30 - 3:30PM PST",
-          location: "San Francisco"
+          start: "12/31/19 12:30PM",
+          end: "12/31/19 3:30PM",
+          location: "San Francisco",
+          lat: "-122.53354",
+          long: "34.56986"
         },
         {
           key: '2',
+          eventID: '325235',
           title: "SF Marathon 2",
           description: "Join the SF marathon now!",
+          registered: false,
           imageUrl: null,
-          date: "12/31/19 12:30 - 3:30PM PST",
-          location: "San Francisco"
+          start: "12/31/19 12:30PM",
+          end: "12/31/19 3:30PM",
+          location: "San Francisco",
+          lat: "-122.53354",
+          long: "34.56986"
         },
         {
           key: '3',
           title: "SF Marathon 3",
+          eventID: '392058',
           description: "Join the SF marathon now!",
+          registered: false,
           imageUrl: null,
-          date: "12/31/19 12:30 - 3:30PM PST",
-          location: "San Francisco"
+          start: "12/31/19 12:30PM",
+          end: "12/31/19 3:30PM",
+          location: "San Francisco",
+          lat: "-122.53354",
+          long: "34.56986"
         }
       ]
     }
