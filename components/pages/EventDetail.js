@@ -110,7 +110,7 @@ class EventDetail extends Component<Props, State> {
                 <Text style={{color: "#fff", fontSize: 16}}>Check In</Text>
               </TouchableOpacity>
             </View>
-          </Modal>
+        </Modal>
         {
           this.state.lat != null ?
             <MapView
@@ -136,7 +136,7 @@ class EventDetail extends Component<Props, State> {
           <Text style={styles.description}>{this.state.description}</Text>
         </View>
         <View style={{paddingHorizontal: 10}}>
-          <Text style={styles.date}>Check In Time: {this.state.start.toLocaleString()}</Text>
+          <Text style={styles.date}>Check In After: {this.state.start.toLocaleString()}</Text>
           <Text style={styles.date}>Check Out Before: {this.state.end.toLocaleString()}</Text>
           <TouchableOpacity activeOpacity={0.7} style={styles.button} onPress={() => this.state.registered ? this.setState({modalVisible: true}) : this.register()}>
             <Text style={{color: "#fff", fontSize: 16}}>{this.state.registered ? "Check In" : "Registered"}</Text>
@@ -184,7 +184,7 @@ const styles = StyleSheet.create({
     marginLeft: 5,
   },
   date: {
-    // color: '#848484',
+    color: '#848484',
     marginBottom: 10,
   },
   view: {
