@@ -76,7 +76,7 @@ const styles = StyleSheet.create({
   },
   description: {
     fontSize: 12,
-    color: '#848484',
+    color: '#616161',
     flex: 4,
     flexShrink: 1,
   },

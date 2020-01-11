@@ -27,6 +27,7 @@ import {
 import FindEvents from './components/pages/FindEvents';
 import RegisteredEvents from './components/pages/RegisteredEvents'
 import EventDetail from './components/pages/EventDetail'
+import CheckedIn from './components/pages/CheckedIn'
 
 //navigation
 import 'react-native-gesture-handler'
@@ -77,7 +78,8 @@ const TabNavigator = createBottomTabNavigator(
 const StackNavigator = createStackNavigator(
   {
     TabNavigator: TabNavigator,
-    EventDetail: EventDetail
+    EventDetail: EventDetail,
+    CheckedIn: CheckedIn,
   },
   {
     initialRouteName: 'TabNavigator',
