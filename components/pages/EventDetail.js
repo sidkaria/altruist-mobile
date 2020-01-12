@@ -1,9 +1,8 @@
 /* @flow */
 import React, { Component } from 'react';
-import { View, Text, Image, Button, SafeAreaView, StyleSheet, Alert } from 'react-native';
+import { View, Text, Image, Button, SafeAreaView, StyleSheet, Alert, TouchableOpacity, TouchableHighlight } from 'react-native';
 
 import { NavigationActions, StackActions, NavigationScreenProps, withNavigation } from 'react-navigation'
-import { TouchableOpacity, TouchableHighlight } from 'react-native-gesture-handler';
 import Modal from 'react-native-modal'
 
 import MapView, { Circle, Marker } from 'react-native-maps'
@@ -79,7 +78,6 @@ class EventDetail extends Component<Props, State> {
     } else {
       Alert.alert("Could not check in: not the right time.")
     }
-    
   }
 
   register() {
@@ -150,6 +148,7 @@ class EventDetail extends Component<Props, State> {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
+    paddingBottom: 10,
   },
   mapView: {
     flex: 3,
