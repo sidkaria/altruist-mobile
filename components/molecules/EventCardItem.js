@@ -19,7 +19,16 @@ type Props = NavigationScreenProps & {
   description: String,
   registered: Boolean,
   image: ImageBitmap,
-  location?: String,
+  location?: {
+    id?: Number,
+    address_line?: String,
+    city?: String,
+    state?: String,
+    postal_code?: String,
+    country_code?: String,
+    latitude?: String,
+    longitude?: String,
+  },
   start?: String,
   end? : String,
 };
@@ -35,7 +44,7 @@ class EventCardItem extends Component<Props> {
             <Text style={styles.date}>{this.props.start} - {this.props.end}</Text>
             <View style={styles.locationStuff}>
               <Icon name="map-marker-alt"></Icon>
-              <Text style={styles.location}>{this.props.location}</Text>
+              <Text style={styles.location}>{this.props.location.city}</Text>
             </View>
           </View>
           <Image style={styles.image}></Image>

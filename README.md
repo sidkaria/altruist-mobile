@@ -5,6 +5,7 @@ Instructions to start:
 2. Clone this repo
 3. Run `npm install` in root to install node modules
 4. Plug in Google API Key into `ios/Altruist/AppDelegate.m` and `android/app/src/main/AndroidManifest.xml`
-5. Run `npx react-native run-ios` or `npx react-native run-android`
+5. Plug in Altruist API domain into all `fakedomain.com`s that exist in the repo
+6. Run `npx react-native run-ios` or `npx react-native run-android`
 
 If Cocoapods causes some error / there are duplicate dependencies for ios, clear the output files under `Altruist -> Build Phases -> [CP] Copy Pods Resources` through Xcode

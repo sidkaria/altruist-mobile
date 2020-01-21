@@ -16,13 +16,13 @@ export default class EventCardList extends Component<Props> {
         data={this.props.events}
         renderItem={({item}) => 
           <EventCardItem
-            eventID={item.eventID}
-            title={item.title}
+            eventID={item.id}
+            title={item.name}
             description={item.description}
             image={item.imageUrl}
-            location={item.location}
-            start={item.start}
-            end={item.end}
+            location={item.address}
+            start={item.start_time}
+            end={item.end_time}
             registered={item.registered}>
           </EventCardItem>}
       />

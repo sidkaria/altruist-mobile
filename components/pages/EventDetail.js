@@ -1,6 +1,6 @@
 /* @flow */
 import React, { Component } from 'react';
-import { View, Text, Image, Button, SafeAreaView, StyleSheet, Alert, TouchableOpacity, TouchableHighlight } from 'react-native';
+import { View, Text, Image, Button, SafeAreaView, StyleSheet, Alert, TouchableOpacity, TouchableHighlight, ActivityIndicator } from 'react-native';
 
 import { NavigationActions, StackActions, NavigationScreenProps, withNavigation } from 'react-navigation'
 import Modal from 'react-native-modal'
@@ -12,19 +12,13 @@ type Props = NavigationScreenProps & {
 }
 
 type State = {
+  eventID: Number,
   loading: boolean,
-  eventID?: string,
-  title?: string,
-  description?: string,
-  registered?: boolean,
-  imageUrl?: null,
-  location?: string,
-  start?: Date,
-  end?: Date,
-  location?: string,
-  lat?: number,
-  long?: number,
+  registerButtonLoading: boolean,
+  event?: Object,
   modalVisible: boolean,
+  waitingForOrganizer: boolean,
+  registered?: boolean,
 }
 
 class EventDetail extends Component<Props, State> {
@@ -35,8 +29,10 @@ class EventDetail extends Component<Props, State> {
 
   state = {
     loading: true,
+    registerButtonLoading: true,
     eventID: this.props.navigation.getParam('eventID', 'NO-ID'),
     modalVisible: false,
+    waitingForOrganizer: false,
   }
 
   componentDidMount() {
@@ -45,39 +41,74 @@ class EventDetail extends Component<Props, State> {
   }
 
   fetchEventInfo = () => {
-    var startDate = new Date(2010, 10);
-    var endDate = new Date(2050, 10)
-    this.setState({
-      loading: false,
-      title: "SF Marathon",
-      description: "Join the SF marathon now! Join the SF marathon now! Join the SF marathon now! Join the SF marathon now! Join the SF marathon now!",
-      registered: true,
-      imageUrl: null,
-      start: startDate,
-      end: endDate,
-      location: "San Francisco",
-      lat: 37.776030,
-      long: -122.418800
-    })
+    fetch('http://fakedomain.com/event/' + this.state.eventID.toLocaleString())
+      .then((response) => response.json())
+      .then((responseJson) => {
+        this.setState({
+          loading: false,
+          event: responseJson
+        });
+      })
+      .catch((error) =>{
+        Alert.alert(error)
+      });
+
+    this.refreshRegisteredOrNot()
   }
   
   checkin() {
+    this.setState({waitingForOrganizer: true})
     var currDate = new Date();
-    if (currDate >= this.state.start && currDate <= this.state.end) {
+    if (currDate >= this.state.event.start_time && currDate <= this.state.event.end_time) {
       //call backend checkin
-      let success = true
-      if (success) {
-        this.setState({modalVisible: false})
-        const resetAction = StackActions.reset({
-          index: 0,
-          actions: [NavigationActions.navigate({routeName: 'CheckedIn'})],
-          key: null,
-        });    
-        this.props.navigation.dispatch(resetAction)
+      var ws = new WebSocket('ws://host.com/path');
+      ws.onopen = () => {
+        ws.send('checkIn');
       }
-    } else {
-      Alert.alert("Could not check in: not the right time.")
+      ws.onerror = () => {
+        this.setState({modalVisible: false, waitingForOrganizer: false})
+        Alert.alert("Could not check in.");
+      }
+      ws.onmessage = (e) => {
+        if (e.toLocaleString() != 'success') {
+          this.setState({modalVisible: false, waitingForOrganizer: false})
+          const resetAction = StackActions.reset({
+            index: 0,
+            actions: [NavigationActions.navigate({routeName: 'CheckedIn'})],
+            key: null,
+          });    
+          this.props.navigation.dispatch(resetAction)
+        }
+      }
+      ws.onclose = (e) => {
+        console.log(e);
+      }
     }
+  }
+
+  refreshRegisteredOrNot() {
+    return fetch('http://fakedomain.com/volunteer_event/1')
+      .then((response) => response.json())
+      .then((responseJson) => {
+        var reg = false
+
+        for (var i = 0; i < responseJson.length; i++) {
+          if (responseJson[i].id == this.state.eventID) {
+              reg = true;
+              break;
+          }
+        }
+
+        this.setState({
+          registerButtonLoading: false,
+          registered: reg
+        }, function(){
+
+        });
+      })
+      .catch((error) =>{
+        Alert.alert(error)
+      });
   }
 
   register() {
@@ -91,7 +122,9 @@ class EventDetail extends Component<Props, State> {
 
   render() {
     if (this.state.loading)
-      return (<View></View>)
+      return (<View>
+        <ActivityIndicator />
+      </View>)
     else
       return (
       <SafeAreaView style={styles.container}>
@@ -107,20 +140,28 @@ class EventDetail extends Component<Props, State> {
               <TouchableOpacity activeOpacity={0.7} style={styles.button} onPress={() => this.state.registered ? this.checkin() : this.register()}>
                 <Text style={{color: "#fff", fontSize: 16}}>Check In</Text>
               </TouchableOpacity>
+              {this.state.waitingForOrganizer ?
+                <View style={{marginTop: 20}}>
+                  <Text style={{marginBottom: 10}}>Waiting for organizer approval.</Text>
+                  <ActivityIndicator></ActivityIndicator>
+                </View>
+                :
+                null
+              }
             </View>
         </Modal>
         {
-          this.state.lat != null ?
+          this.state.event.address.latitude != null ?
             <MapView
               style={styles.mapView}
               initialRegion={{
-                latitude: this.state.lat,
-                longitude: this.state.long,
+                latitude: parseFloat(this.state.event.address.latitude),
+                longitude: parseFloat(this.state.event.address.longitude),
                 latitudeDelta: 0.0922,
                 longitudeDelta: 0.0421,
               }}>
-              <Circle center={{latitude: this.state.lat, longitude: this.state.long}} radius={2000} fillColor="rgba(71,158,206,0.37)" strokeColor="#479ECE"/>
-              <Marker coordinate={{latitude: this.state.lat, longitude: this.state.long}}/>
+              <Circle center={{latitude: parseFloat(this.state.event.address.latitude), longitude: parseFloat(this.state.event.address.longitude)}} radius={2000} fillColor="rgba(71,158,206,0.37)" strokeColor="#479ECE"/>
+              <Marker coordinate={{latitude: parseFloat(this.state.event.address.latitude), longitude: parseFloat(this.state.event.address.longitude)}}/>
             </MapView>
           : 
             <View style={styles.mapView}/>
@@ -128,16 +169,16 @@ class EventDetail extends Component<Props, State> {
         <View style={styles.rest}>
           <View style={styles.locationStuff}>
             <Icon name="map-marker-alt"></Icon>
-            <Text style={styles.location}>{this.state.location}</Text>
+            <Text style={styles.location}>{this.state.event.address.city}</Text>
           </View>
-          <Text style={styles.title}>{this.state.title}</Text>
-          <Text style={styles.description}>{this.state.description}</Text>
+          <Text style={styles.title}>{this.state.event.name}</Text>
+          <Text style={styles.description}>{this.state.event.description}</Text>
         </View>
         <View style={{paddingHorizontal: 10}}>
-          <Text style={styles.date}>Check In After: {this.state.start.toLocaleString()}</Text>
-          <Text style={styles.date}>Check Out Before: {this.state.end.toLocaleString()}</Text>
+          <Text style={styles.date}>Check In After: {this.state.event.start_time.toLocaleString()}</Text>
+          <Text style={styles.date}>Check Out Before: {this.state.event.end_time.toLocaleString()}</Text>
           <TouchableOpacity activeOpacity={0.7} style={styles.button} onPress={() => this.state.registered ? this.setState({modalVisible: true}) : this.register()}>
-            <Text style={{color: "#fff", fontSize: 16}}>{this.state.registered ? "Check In" : "Registered"}</Text>
+            <Text style={{color: "#fff", fontSize: 16}}>{this.state.registerButtonLoading ? <ActivityIndicator /> : (this.state.registered ? "Check In" : "Register")}</Text>
           </TouchableOpacity>
         </View>
       </SafeAreaView>
