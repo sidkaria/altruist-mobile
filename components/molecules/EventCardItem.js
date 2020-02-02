@@ -60,7 +60,7 @@ const styles = StyleSheet.create({
     flex: 1,
     flexDirection: 'row',
     borderRadius: 5,
-    padding: 10,
+    padding: 15,
     margin: 10,
     height: 150,
     shadowColor: "#000",
@@ -86,12 +86,13 @@ const styles = StyleSheet.create({
   description: {
     fontSize: 12,
     color: '#616161',
-    flex: 4,
+    flex: 3,
     flexShrink: 1,
   },
   date: {
     fontSize: 12,
     marginRight: 10,
+    marginBottom: 5,
     flex: 1,
   },
   locationStuff: {

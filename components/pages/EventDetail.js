@@ -41,7 +41,7 @@ class EventDetail extends Component<Props, State> {
   }
 
   fetchEventInfo = () => {
-    fetch('http://fakedomain.com/event/' + this.state.eventID.toLocaleString())
+    fetch('http://34.82.67.111/event/' + this.state.eventID.toLocaleString())
       .then((response) => response.json())
       .then((responseJson) => {
         this.setState({
@@ -87,7 +87,7 @@ class EventDetail extends Component<Props, State> {
   }
 
   refreshRegisteredOrNot() {
-    return fetch('http://fakedomain.com/volunteer_event/1')
+    return fetch('http://34.82.67.111/volunteer_event/1')
       .then((response) => response.json())
       .then((responseJson) => {
         var reg = false
@@ -178,7 +178,7 @@ class EventDetail extends Component<Props, State> {
           <Text style={styles.date}>Check In After: {this.state.event.start_time.toLocaleString()}</Text>
           <Text style={styles.date}>Check Out Before: {this.state.event.end_time.toLocaleString()}</Text>
           <TouchableOpacity activeOpacity={0.7} style={styles.button} onPress={() => this.state.registered ? this.setState({modalVisible: true}) : this.register()}>
-            <Text style={{color: "#fff", fontSize: 16}}>{this.state.registerButtonLoading ? <ActivityIndicator /> : (this.state.registered ? "Check In" : "Register")}</Text>
+            {this.state.registerButtonLoading ? <ActivityIndicator /> : <Text style={{color: "#fff", fontSize: 16}}> {this.state.registered ? "Check In" : "Register"}</Text>}
           </TouchableOpacity>
         </View>
       </SafeAreaView>

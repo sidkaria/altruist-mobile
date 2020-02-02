@@ -24,14 +24,17 @@ import {
   ReloadInstructions,
 } from 'react-native/Libraries/NewAppScreen';
 
-import FindEvents from './components/pages/FindEvents';
+import FindEvents from './components/pages/FindEvents'
 import RegisteredEvents from './components/pages/RegisteredEvents'
 import EventDetail from './components/pages/EventDetail'
 import CheckedIn from './components/pages/CheckedIn'
+import Splash from './components/pages/Splash'
+import Profile from './components/pages/Profile'
+import OrganizerHome from './components/pages/OrganizerHome';
 
 //navigation
 import 'react-native-gesture-handler'
-import { createAppContainer } from 'react-navigation';
+import { createAppContainer, createSwitchNavigator } from 'react-navigation';
 import { createStackNavigator } from 'react-navigation-stack'
 import { createBottomTabNavigator } from 'react-navigation-tabs';
 import Ionicons from 'react-native-vector-icons/Ionicons'
@@ -43,6 +46,9 @@ const TabNavigator = createBottomTabNavigator(
     },
     "Registered Events": {
       screen: RegisteredEvents
+    },
+    "Profile": {
+      screen: Profile
     }
   },
   {
@@ -55,6 +61,8 @@ const TabNavigator = createBottomTabNavigator(
           iconName = `ios-information-circle${focused ? '' : '-outline'}`;
         } else if (routeName === 'Registered Events') {
           iconName = `ios-options`;
+        } else {
+          iconName= `ios-contact`;
         }
 
         // You can return any component that you like here!
@@ -71,20 +79,38 @@ const TabNavigator = createBottomTabNavigator(
       return {
         headerTitle,
       }
-    }
+    },
+    
   }
 );
 
 const StackNavigator = createStackNavigator(
   {
+    Splash: Splash,
     TabNavigator: TabNavigator,
     EventDetail: EventDetail,
     CheckedIn: CheckedIn,
   },
   {
-    initialRouteName: 'TabNavigator',
+    initialRouteName: 'Splash',
   }
 );
 
+const OrganizerStackNavigator = createStackNavigator(
+  {
+    Home: OrganizerHome,
+  }
+)
 
-export default createAppContainer(StackNavigator);
+const SwitchStackNavigator = createSwitchNavigator(
+  {
+    Volunteer: StackNavigator,
+    Organizer: OrganizerStackNavigator,
+  },
+  {
+    initialRouteName: 'Volunteer',
+  }
+)
+
+
+export default createAppContainer(SwitchStackNavigator);
