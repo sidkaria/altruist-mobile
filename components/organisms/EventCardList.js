@@ -13,6 +13,7 @@ export default class EventCardList extends Component<Props> {
   render() {
     return (
       <FlatList
+        keyExtractor={(item, index)=>index.toString()}
         data={this.props.events}
         renderItem={({item}) => 
           <EventCardItem

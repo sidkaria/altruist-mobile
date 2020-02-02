@@ -2,7 +2,7 @@
 import React, { Component } from 'react';
 import { View, Text, Image, Button, SafeAreaView, StyleSheet, Alert, TouchableOpacity, TouchableHighlight, ActivityIndicator } from 'react-native';
 
-import { NavigationActions, StackActions, NavigationScreenProps, withNavigation } from 'react-navigation'
+import { NavigationActions, StackActions, NavigationScreenProps, withNavigation, ScrollView } from 'react-navigation'
 import Modal from 'react-native-modal'
 
 import MapView, { Circle, Marker } from 'react-native-maps'
@@ -117,6 +117,7 @@ class EventDetail extends Component<Props, State> {
     if (success) {
       Alert.alert("Successfully registered")
       this.setState({registered: true})
+      //TODO call refreshRegisteredOrNot()
     }
   }
 
@@ -150,37 +151,40 @@ class EventDetail extends Component<Props, State> {
               }
             </View>
         </Modal>
-        {
-          this.state.event.address.latitude != null ?
-            <MapView
-              style={styles.mapView}
-              initialRegion={{
-                latitude: parseFloat(this.state.event.address.latitude),
-                longitude: parseFloat(this.state.event.address.longitude),
-                latitudeDelta: 0.0922,
-                longitudeDelta: 0.0421,
-              }}>
-              <Circle center={{latitude: parseFloat(this.state.event.address.latitude), longitude: parseFloat(this.state.event.address.longitude)}} radius={2000} fillColor="rgba(71,158,206,0.37)" strokeColor="#479ECE"/>
-              <Marker coordinate={{latitude: parseFloat(this.state.event.address.latitude), longitude: parseFloat(this.state.event.address.longitude)}}/>
-            </MapView>
-          : 
-            <View style={styles.mapView}/>
-        }
-        <View style={styles.rest}>
-          <View style={styles.locationStuff}>
-            <Icon name="map-marker-alt"></Icon>
-            <Text style={styles.location}>{this.state.event.address.city}</Text>
+        <ScrollView>
+          {
+            this.state.event.address.latitude != null ?
+              <MapView
+                style={styles.mapView}
+                initialRegion={{
+                  latitude: parseFloat(this.state.event.address.latitude),
+                  longitude: parseFloat(this.state.event.address.longitude),
+                  latitudeDelta: 0.0922,
+                  longitudeDelta: 0.0421,
+                }}>
+                <Circle center={{latitude: parseFloat(this.state.event.address.latitude), longitude: parseFloat(this.state.event.address.longitude)}} radius={2000} fillColor="rgba(71,158,206,0.37)" strokeColor="#479ECE"/>
+                <Marker coordinate={{latitude: parseFloat(this.state.event.address.latitude), longitude: parseFloat(this.state.event.address.longitude)}}/>
+              </MapView>
+            : 
+              <View style={styles.mapView}/>
+          }
+          <View style={styles.rest}>
+            <View style={styles.locationStuff}>
+              <Icon name="map-marker-alt"></Icon>
+              <Text style={styles.location}>{this.state.event.address.city}</Text>
+            </View>
+            <Text style={styles.title}>{this.state.event.name}</Text>
+            <Text style={styles.description}>{this.state.event.description}</Text>
+            <Image style={styles.image} source={{uri: this.state.event.image_url}} />
           </View>
-          <Text style={styles.title}>{this.state.event.name}</Text>
-          <Text style={styles.description}>{this.state.event.description}</Text>
-        </View>
-        <View style={{paddingHorizontal: 10}}>
-          <Text style={styles.date}>Check In After: {this.state.event.start_time.toLocaleString()}</Text>
-          <Text style={styles.date}>Check Out Before: {this.state.event.end_time.toLocaleString()}</Text>
+          <View style={{paddingHorizontal: 10, marginBottom: 50}}>
+            <Text style={styles.date}>Check In After: {this.state.event.start_time.toLocaleString()}</Text>
+            <Text style={styles.date}>Check Out Before: {this.state.event.end_time.toLocaleString()}</Text>
+          </View>
+        </ScrollView>
           <TouchableOpacity activeOpacity={0.7} style={styles.button} onPress={() => this.state.registered ? this.setState({modalVisible: true}) : this.register()}>
             {this.state.registerButtonLoading ? <ActivityIndicator /> : <Text style={{color: "#fff", fontSize: 16}}> {this.state.registered ? "Check In" : "Register"}</Text>}
           </TouchableOpacity>
-        </View>
       </SafeAreaView>
     );
   }
@@ -188,31 +192,39 @@ class EventDetail extends Component<Props, State> {
 
 const styles = StyleSheet.create({
   container: {
-    flex: 1,
     paddingBottom: 10,
   },
   mapView: {
-    flex: 3,
+    // flex: 3,
     borderWidth: 1,
-    borderColor: 'lightgrey'
+    borderColor: '#616161',
+    height: 250,
   },
   rest: {
-    flex: 8,
+    // flex: 8,
     padding: 15,
   },
   title: {
     fontSize: 24,
     fontWeight: 'bold',
-    marginBottom: 20,
+    marginBottom: 15,
   },
   description: {
-    color: "#616161"
+    color: "#616161",
+    marginBottom: 20,
+  },
+  image: {
+    aspectRatio: 1,
+    borderWidth: 1,
+    borderColor: '#e4e4e4',
+    borderRadius: 5,
   },
   button: {
     alignItems: "center",
     backgroundColor: "#479ece",
     padding: 15,
-    // marginHorizontal: 10,
+    marginHorizontal: 10,
+    bottom: 50,
     borderRadius: 3,
   },
   locationStuff: {

@@ -7,6 +7,7 @@ import {
   StyleSheet,
   ColorPropType,
   Image,
+  ActivityIndicator,
 } from 'react-native';
 
 import Icon from 'react-native-vector-icons/Fontisto'
@@ -18,7 +19,7 @@ type Props = NavigationScreenProps & {
   title: String,
   description: String,
   registered: Boolean,
-  image: ImageBitmap,
+  imageUrl?: String,
   location?: {
     id?: Number,
     address_line?: String,
@@ -33,7 +34,16 @@ type Props = NavigationScreenProps & {
   end? : String,
 };
 
-class EventCardItem extends Component<Props> {
+type State = {
+  imageLoading: boolean,
+}
+
+class EventCardItem extends Component<Props, State> {
+
+  state = {
+    imageLoading: true,
+  }
+
   render() {
     return (
       <TouchableOpacity activeOpacity={0.7} onPress={() => this.props.navigation.navigate('EventDetail', { eventID: this.props.eventID })}>
@@ -47,7 +57,7 @@ class EventCardItem extends Component<Props> {
               <Text style={styles.location}>{this.props.location.city}</Text>
             </View>
           </View>
-          <Image style={styles.image}></Image>
+          <Image style={styles.image} source={{uri: this.props.imageUrl}}></Image>
         </View>
       </TouchableOpacity>
     );
@@ -106,8 +116,8 @@ const styles = StyleSheet.create({
   image: {
     aspectRatio: 1,
     borderWidth: 1,
-    borderColor: 'lightgrey',
-    borderRadius: 3,
+    borderColor: '#e4e4e4',
+    borderRadius: 5,
   }
 });
 

@@ -9,9 +9,11 @@ import {
   SafeAreaView,
   ActivityIndicator,
   Alert,
+  ScrollView,
 } from 'react-native';
 
 import EventCardList from '../../components/organisms/EventCardList'
+import SearchEvents from '../molecules/SearchEvents';
 
 type Props = {};
 type State = {
@@ -50,7 +52,10 @@ export default class RegisteredEvents extends Component<Props, State> {
           <View style={{ marginTop: 20 }}>
             <ActivityIndicator />
           </View> :
-          <EventCardList events={this.state.events} />
+          <ScrollView>
+            <SearchEvents />
+            <EventCardList events={this.state.events} />
+          </ScrollView>
         }
       </SafeAreaView>
     );

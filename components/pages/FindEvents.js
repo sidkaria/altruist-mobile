@@ -9,9 +9,11 @@ import {
   SafeAreaView,
   ActivityIndicator,
   Alert,
+  ScrollView,
 } from 'react-native';
 
 import EventCardList from '../../components/organisms/EventCardList'
+import SearchEvents from '../molecules/SearchEvents';
 
 type Props = {};
 type State = {
@@ -74,6 +76,7 @@ export default class FindEvents extends Component<Props, State> {
   }
 
   componentDidMount() {
+    console.disableYellowBox = true;
     return fetch('http://fakedomain/event/')
       .then((response) => response.json())
       .then((responseJson) => {
@@ -98,7 +101,10 @@ export default class FindEvents extends Component<Props, State> {
           <View style={{ marginTop: 20 }}>
             <ActivityIndicator />
           </View> :
-          <EventCardList events={this.state.events} />
+          <ScrollView>
+            <SearchEvents />
+            <EventCardList events={this.state.events} />
+          </ScrollView>
         }
       </SafeAreaView>
     );
