@@ -58,11 +58,11 @@ const TabNavigator = createBottomTabNavigator(
         let IconComponent = Ionicons;
         let iconName;
         if (routeName === 'Find Events') {
-          iconName = `ios-information-circle${focused ? '' : '-outline'}`;
+          iconName = `ios-list${focused ? '-box' : ''}`;
         } else if (routeName === 'Registered Events') {
-          iconName = `ios-options`;
+          iconName = `ios-done-all`;
         } else {
-          iconName= `ios-contact`;
+          iconName= `ios${focused ? '-contact' : '-person'}`;
         }
 
         // You can return any component that you like here!

@@ -41,7 +41,7 @@ class EventDetail extends Component<Props, State> {
   }
 
   fetchEventInfo = () => {
-    fetch('http://34.82.67.111/event/' + this.state.eventID.toLocaleString())
+    fetch('http://fakedomain/event/' + this.state.eventID.toLocaleString())
       .then((response) => response.json())
       .then((responseJson) => {
         this.setState({
@@ -87,7 +87,7 @@ class EventDetail extends Component<Props, State> {
   }
 
   refreshRegisteredOrNot() {
-    return fetch('http://34.82.67.111/volunteer_event/1')
+    return fetch('http://fakedomain/volunteer_event/1')
       .then((response) => response.json())
       .then((responseJson) => {
         var reg = false

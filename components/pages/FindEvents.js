@@ -74,7 +74,7 @@ export default class FindEvents extends Component<Props, State> {
   }
 
   componentDidMount() {
-    return fetch('http://34.82.67.111/event/')
+    return fetch('http://fakedomain/event/')
       .then((response) => response.json())
       .then((responseJson) => {
 

@@ -23,7 +23,8 @@ export default class EventCardList extends Component<Props> {
             location={item.address}
             start={item.start_time}
             end={item.end_time}
-            registered={item.registered}>
+            registered={item.registered}
+            imageUrl={item.image_url}>
           </EventCardItem>}
       />
     );

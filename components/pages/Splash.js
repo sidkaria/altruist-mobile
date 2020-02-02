@@ -31,7 +31,7 @@ class Splash extends Component<Props, State> {
   }
 
   componentDidMount() {
-    return fetch('http://34.82.67.111/event/1')
+    return fetch('http://fakedomain/event/1')
       .then((response) => response.json())
       .then((responseJson) => {
         const resetAction = StackActions.reset({
