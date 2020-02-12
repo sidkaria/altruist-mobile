@@ -17,11 +17,14 @@ type State = {
   registerButtonLoading: boolean,
   event?: Object,
   modalVisible: boolean,
+  modalHidable: boolean,
   waitingForOrganizer: boolean,
   registered?: boolean,
 }
 
 class EventDetail extends Component<Props, State> {
+
+  timer = null;
   
   static navigationOptions = {
     title: 'Event Details',
@@ -32,6 +35,7 @@ class EventDetail extends Component<Props, State> {
     registerButtonLoading: true,
     eventID: this.props.navigation.getParam('eventID', 'NO-ID'),
     modalVisible: false,
+    modalHidable: true,
     waitingForOrganizer: false,
   }
 
@@ -57,21 +61,69 @@ class EventDetail extends Component<Props, State> {
   }
   
   checkin() {
-    this.setState({waitingForOrganizer: true})
+    this.setState({modalHidable: false, waitingForOrganizer: true})
     var currDate = new Date();
-    if (currDate >= this.state.event.start_time && currDate <= this.state.event.end_time) {
+    // if (currDate >= this.state.event.start_time && currDate <= this.state.event.end_time) {
       //call backend checkin
-      var ws = new WebSocket('ws://host.com/path');
-      ws.onopen = () => {
-        ws.send('checkIn');
-      }
-      ws.onerror = () => {
-        this.setState({modalVisible: false, waitingForOrganizer: false})
-        Alert.alert("Could not check in.");
-      }
-      ws.onmessage = (e) => {
-        if (e.toLocaleString() != 'success') {
-          this.setState({modalVisible: false, waitingForOrganizer: false})
+      // var ws = new WebSocket('ws://host.com/path');
+      // ws.onopen = () => {
+      //   ws.send('checkIn');
+      // }
+      // ws.onerror = () => {
+      //   this.setState({modalVisible: false, waitingForOrganizer: false})
+      //   Alert.alert("Could not check in.");
+      // }
+      // ws.onmessage = (e) => {
+      //   if (e.toLocaleString() != 'success') {
+      //     this.setState({modalVisible: false, waitingForOrganizer: false})
+      //     const resetAction = StackActions.reset({
+      //       index: 0,
+      //       actions: [NavigationActions.navigate({routeName: 'CheckedIn'})],
+      //       key: null,
+      //     });    
+      //     this.props.navigation.dispatch(resetAction)
+      //   }
+      // }
+      // ws.onclose = (e) => {
+      //   console.log(e);
+      // }
+      return fetch('http://fakedomain/check_in/1/' + this.state.eventID.toString() + "/", {
+        headers: {
+          'Accept': 'application/json',
+          'Content-Type': 'application/json'
+        },
+        method: 'POST',
+        body: JSON.stringify({
+          'check_in_initiated': '2020-02-04T13:00:00',
+          'check_in_point': {
+            'latitude': 9.44,
+            'longitude': 7.98
+          },
+          'check_out_initiated': null,
+          'check_out_point': null
+        })
+      })
+        .then((response) => response.json())
+        .then((responseJson) => {
+          console.log("After hitting check in: " + JSON.stringify(responseJson))
+          this.timer = setInterval(()=> this.getOrganizerApproved(), 5000);
+        })
+        .catch((error) => {
+          // Alert.alert(error)
+          console.log(error)
+          this.setState({modalHidable: true, waitingForOrganizer: false})
+        })
+
+    // }
+  }
+
+  getOrganizerApproved() {
+    return fetch('http://fakedomain/check_in/1/' + this.state.eventID.toString())
+      .then((response) => response.json())
+      .then((responseJson) => {
+        console.log("Waiting for approval: " + JSON.stringify(responseJson))
+        if (responseJson.check_in_approval != null) {
+          this.setState({modalHidable: true, modalVisible: false, waitingForOrganizer: false})
           const resetAction = StackActions.reset({
             index: 0,
             actions: [NavigationActions.navigate({routeName: 'CheckedIn'})],
@@ -79,11 +131,11 @@ class EventDetail extends Component<Props, State> {
           });    
           this.props.navigation.dispatch(resetAction)
         }
-      }
-      ws.onclose = (e) => {
-        console.log(e);
-      }
-    }
+      })
+      .catch((error) => {
+        Alert.alert(error)
+        this.setState({modalHidable: true, waitingForOrganizer: false})
+      })
   }
 
   refreshRegisteredOrNot() {
@@ -130,15 +182,16 @@ class EventDetail extends Component<Props, State> {
       return (
       <SafeAreaView style={styles.container}>
         <Modal
+          backdropTransitionOutTiming={0}
           isVisible={this.state.modalVisible}
-          onSwipeComplete={() => this.setState({modalVisible: false})}
-          onBackdropPress={() => this.setState({modalVisible: false})}
-          swipeDirection={['down']}
+          onSwipeComplete={this.state.modalHidable ? () => this.setState({modalVisible: false}) : null}
+          onBackdropPress={this.state.modalHidable ? () => this.setState({modalVisible: false}) : null}
+          swipeDirection={this.state.modalHidable ? ['down'] : []}
           style={styles.view}
           >
             <View style={styles.modalContent}>
               <Text style={styles.modalTitle}>Are you sure you want to check in right now?</Text>
-              <TouchableOpacity activeOpacity={0.7} style={styles.button} onPress={() => this.state.registered ? this.checkin() : this.register()}>
+              <TouchableOpacity activeOpacity={0.7} style={styles.modalButton} onPress={() => this.state.registered ? this.checkin() : this.register()}>
                 <Text style={{color: "#fff", fontSize: 16}}>Check In</Text>
               </TouchableOpacity>
               {this.state.waitingForOrganizer ?
@@ -153,17 +206,17 @@ class EventDetail extends Component<Props, State> {
         </Modal>
         <ScrollView>
           {
-            this.state.event.address.latitude != null ?
+            this.state.event.address.point != null ?
               <MapView
                 style={styles.mapView}
                 initialRegion={{
-                  latitude: parseFloat(this.state.event.address.latitude),
-                  longitude: parseFloat(this.state.event.address.longitude),
+                  latitude: parseFloat(this.state.event.address.point.latitude),
+                  longitude: parseFloat(this.state.event.address.point.longitude),
                   latitudeDelta: 0.0922,
                   longitudeDelta: 0.0421,
                 }}>
-                <Circle center={{latitude: parseFloat(this.state.event.address.latitude), longitude: parseFloat(this.state.event.address.longitude)}} radius={2000} fillColor="rgba(71,158,206,0.37)" strokeColor="#479ECE"/>
-                <Marker coordinate={{latitude: parseFloat(this.state.event.address.latitude), longitude: parseFloat(this.state.event.address.longitude)}}/>
+                <Circle center={{latitude: parseFloat(this.state.event.address.point.latitude), longitude: parseFloat(this.state.event.address.point.longitude)}} radius={2000} fillColor="rgba(71,158,206,0.37)" strokeColor="#479ECE"/>
+                <Marker coordinate={{latitude: parseFloat(this.state.event.address.point.latitude), longitude: parseFloat(this.state.event.address.point.longitude)}}/>
               </MapView>
             : 
               <View style={styles.mapView}/>
@@ -223,8 +276,15 @@ const styles = StyleSheet.create({
     alignItems: "center",
     backgroundColor: "#479ece",
     padding: 15,
-    marginHorizontal: 10,
     bottom: 50,
+    marginHorizontal: 10,
+    borderRadius: 3,
+  },
+  modalButton: {
+    alignItems: "center",
+    backgroundColor: "#479ece",
+    padding: 15,
+    marginHorizontal: 10,
     borderRadius: 3,
   },
   locationStuff: {

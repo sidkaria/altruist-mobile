@@ -4,10 +4,37 @@ import React, { Component } from 'react';
 import { View, Text, StyleSheet, Image, TouchableOpacity } from 'react-native';
 
 type Props = {
+  eventID: number,
+  volunteerid: number,
   name: String,
+  status: String,
 }
 
 export default class VolunteerCardItem extends Component<Props> {
+
+  
+  checkInVolunteer() {
+    return fetch('http://fakedomain/check_in/1/' + this.props.eventID.toString() + "/", {
+      headers: {
+        'Accept': 'application/json',
+        'Content-Type': 'application/json'
+      },
+      method: 'PATCH',
+      body: JSON.stringify({
+        'check_in_approval': '2020-02-04T13:01:00'
+      })
+    })
+      .then((response) => response.json())
+      .then((responseJson) => {
+        console.log("After hitting check in approved: " + JSON.stringify(responseJson))
+      })
+      .catch((error) => {
+        // Alert.alert(error)
+        console.log(error)
+      })
+
+  // }
+  }
 
   render() {
     return (

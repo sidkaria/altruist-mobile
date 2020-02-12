@@ -70,6 +70,7 @@ class CheckedIn extends Component<Props, State> {
     else return (
       <SafeAreaView style={styles.container}>
         <Modal
+          backdropTransitionOutTiming={0}
           isVisible={this.state.modalVisible}
           onSwipeComplete={() => this.setState({modalVisible: false})}
           onBackdropPress={() => this.setState({modalVisible: false})}

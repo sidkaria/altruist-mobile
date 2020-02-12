@@ -31,15 +31,24 @@ class Splash extends Component<Props, State> {
   }
 
   componentDidMount() {
-    return fetch('http://fakedomain/event/1')
+    return fetch('http://fakedomain/volunteer/1')
       .then((response) => response.json())
       .then((responseJson) => {
-        const resetAction = StackActions.reset({
-          index: 0,
-          actions: [NavigationActions.navigate({routeName: 'TabNavigator'})],
-          key: null,
-        });    
-        this.props.navigation.dispatch(resetAction);
+        if (['not_checked_in', 'pending_check_in', 'approved_check_out'].includes(responseJson.status)) {
+          const resetAction = StackActions.reset({
+            index: 0,
+            actions: [NavigationActions.navigate({routeName: 'TabNavigator'})],
+            key: null,
+          });    
+          this.props.navigation.dispatch(resetAction);
+        } else {
+          const resetAction = StackActions.reset({
+            index: 0,
+            actions: [NavigationActions.navigate({routeName: 'CheckedIn'})],
+            key: null,
+          });    
+          this.props.navigation.dispatch(resetAction);
+        }
       })
       .catch((error) =>{
         Alert.alert(error)
